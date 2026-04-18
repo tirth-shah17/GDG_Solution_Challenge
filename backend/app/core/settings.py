@@ -2,8 +2,8 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "MediaShield AI"
-    DATABASE_URL: str = "postgresql://user:password@localhost/dbname" # Update with Neon Postgres URL
-    HASH_THRESHOLD: int = 5 # Hamming distance threshold for similarity
+    DATABASE_URL: str
+    HASH_THRESHOLD: int = 5
     
     class Config:
         env_file = ".env"

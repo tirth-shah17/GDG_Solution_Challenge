@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { UploadSection } from './components/ui/UploadSection';
 
 function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -34,7 +35,7 @@ function App() {
     };
 
     const handleLoadedMetadata = () => {
-      video.play().catch(() => {});
+      video.play().catch(() => { });
       animationFrameId = requestAnimationFrame(updateVideoOpacity);
     };
 
@@ -64,7 +65,7 @@ function App() {
         <video
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-100"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260206_044704_dd33cb15-c23f-4cfc-aa09-a0465d4dcb54.mp4"
           muted
           playsInline
         />
@@ -79,7 +80,7 @@ function App() {
           <div className="text-primary font-serif text-2xl md:text-3xl tracking-wide select-none">
             MediaShield AI<sup className="text-sm">®</sup>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-10 text-sm font-medium text-secondary">
             <a href="#dashboard" className="hover:text-primary transition-colors duration-300">Dashboard</a>
             <a href="#scan" className="hover:text-primary transition-colors duration-300">Scan</a>
@@ -87,7 +88,7 @@ function App() {
             <a href="#about" className="hover:text-primary transition-colors duration-300">About</a>
           </div>
 
-          <button 
+          <button
             onClick={scrollToUpload}
             className="rounded-full px-6 py-2.5 bg-primary text-black font-semibold text-sm hover:scale-[1.03] transition-transform duration-300"
           >
@@ -96,14 +97,14 @@ function App() {
         </nav>
 
         {/* Hero Section */}
-        <main 
+        <main
           className="flex flex-col items-center justify-center text-center px-6"
           style={{ paddingTop: 'calc(8rem - 75px)', paddingBottom: '10rem' }}
         >
           <h1 className="text-5xl sm:text-7xl md:text-8xl max-w-6xl font-serif font-normal leading-[0.95] tracking-[-2px] text-primary animate-fade-rise">
             Track. <span className="text-accent">Detect.</span> <span className="text-accent">Protect</span> digital assets with AI.
           </h1>
-          
+
           <p className="text-base sm:text-lg max-w-2xl mt-8 leading-relaxed text-gray-300 font-light animate-fade-rise-delay">
             Identify unauthorized usage of your media across digital platforms using intelligent fingerprinting and real-time detection.
           </p>
@@ -111,7 +112,7 @@ function App() {
           <div className="relative mt-12 animate-fade-rise-delay-2 group">
             {/* Subtle glow behind CTA */}
             <div className="absolute -inset-1 rounded-full bg-accent-strong opacity-20 group-hover:opacity-40 blur-lg transition duration-500"></div>
-            <button 
+            <button
               onClick={scrollToUpload}
               className="relative bg-accent-strong text-primary overflow-hidden rounded-full font-medium shadow-2xl px-14 py-5 text-base hover:scale-[1.03] transition-all duration-300 flex items-center justify-center"
             >
@@ -120,13 +121,8 @@ function App() {
           </div>
         </main>
 
-        {/* Dummy upload section to scroll to */}
-        <section id="upload-section" className="min-h-screen bg-background border-t border-white/5 flex items-center justify-center">
-          <div className="text-center text-secondary p-12 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/[0.02]">
-            <h2 className="text-3xl font-serif text-primary mb-4">Upload Section</h2>
-            <p className="opacity-70">This is where the user will upload and scan media.</p>
-          </div>
-        </section>
+        {/* Real Upload Section */}
+        <UploadSection />
       </div>
     </div>
   );
