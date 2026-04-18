@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animate-fade-rise {
+    opacity: 0;
+    animation: fade-rise 0.8s ease-out forwards;
+  }
+  .animate-fade-rise-delay {
+    opacity: 0;
+    animation: fade-rise 0.8s ease-out 0.2s forwards;
+  }
+  .animate-fade-rise-delay-2 {
+    opacity: 0;
+    animation: fade-rise 0.8s ease-out 0.4s forwards;
+  }
+}
+
+@keyframes fade-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background text-primary font-sans antialiased;
+}
