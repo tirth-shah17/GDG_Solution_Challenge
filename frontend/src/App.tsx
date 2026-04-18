@@ -78,7 +78,7 @@ function App() {
         {/* Navigation Bar */}
         <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
           <div className="text-primary font-serif text-2xl md:text-3xl tracking-wide select-none">
-            MediaShield AI<sup className="text-sm">®</sup>
+            Athos<sup className="text-sm">®</sup>
           </div>
 
           <div className="hidden md:flex items-center space-x-10 text-sm font-medium text-secondary">
