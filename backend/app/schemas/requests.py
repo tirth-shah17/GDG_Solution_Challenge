@@ -1,4 +1,7 @@
 from pydantic import BaseModel
+from uuid import UUID
+from typing import Optional
 
 class ScanRequest(BaseModel):
-    dataset_source: str | None = None
+    media_id: UUID
+    dataset_source: Optional[str] = None

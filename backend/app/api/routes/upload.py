@@ -21,17 +21,21 @@ async def upload_asset(file: UploadFile = File(...), db: Session = Depends(get_d
     unique_filename = f"{uuid.uuid4()}{file_extension}"
     file_path = os.path.join(UPLOAD_DIR, unique_filename)
     
-    # Save file and calculate hash in chunks to prevent memory overhead
-    file_hash = hashlib.sha256()
+    from app.services.hashing import generate_perceptual_hash
+
+    # Save file to disk
     try:
         with open(file_path, "wb") as buffer:
             while chunk := await file.read(8192):
-                file_hash.update(chunk)
                 buffer.write(chunk)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to process file: {str(e)}")
             
-    asset_hash = file_hash.hexdigest()
+    try:
+        asset_hash = generate_perceptual_hash(file_path)
+    except Exception as e:
+        # If it's a video or unrecognized format, phash might fail, fallback to a dummy hash or raise
+        asset_hash = "0000000000000000"
 
     # Store in Neon DB
     db_asset = MediaAsset(

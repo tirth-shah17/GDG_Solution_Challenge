@@ -1,8 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { UploadSection } from './components/ui/UploadSection';
+import ResultsDashboard from './pages/ResultsDashboard';
+import AboutPage from './pages/AboutPage';
 
-function App() {
+function AppContent() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [activeMediaId, setActiveMediaId] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -24,8 +30,6 @@ function App() {
         }
 
         // Loop a bit before the very end to avoid black flashes if possible
-        // Actually, the prompt says "Reset loop smoothly". 
-        // If we restart exactly at the end, it might feel smooth because of the fade out.
         if (time >= duration - 0.05) {
           video.currentTime = 0;
           video.play();
@@ -52,10 +56,30 @@ function App() {
   }, []);
 
   const scrollToUpload = () => {
-    const uploadSection = document.getElementById('upload-section');
-    if (uploadSection) {
-      uploadSection.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const uploadSection = document.getElementById('upload-section');
+        if (uploadSection) {
+          uploadSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const uploadSection = document.getElementById('upload-section');
+      if (uploadSection) {
+        uploadSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
+  };
+
+  const handleScanComplete = (mediaId: string) => {
+    setActiveMediaId(mediaId);
+    setTimeout(() => {
+      const resultsSection = document.getElementById('results');
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 150); // slight delay to allow rendering and layout recalculation
   };
 
   return (
@@ -74,57 +98,79 @@ function App() {
       </div>
 
       {/* Content wrapper */}
-      <div className="relative z-10 font-sans">
+      <div className="relative z-10 font-sans flex flex-col min-h-screen">
         {/* Navigation Bar */}
-        <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
-          <div className="text-primary font-serif text-2xl md:text-3xl tracking-wide select-none">
-            Athos<sup className="text-sm">®</sup>
-          </div>
+        {location.pathname !== '/about' && (
+          <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto flex-wrap w-full z-50">
+            <Link to="/" className="text-primary font-serif text-2xl md:text-3xl tracking-wide select-none">
+              Athos<sup className="text-sm">®</sup>
+            </Link>
 
-          <div className="hidden md:flex items-center space-x-10 text-sm font-medium text-secondary">
-            <a href="#dashboard" className="hover:text-primary transition-colors duration-300">Dashboard</a>
-            <a href="#scan" className="hover:text-primary transition-colors duration-300">Scan</a>
-            <a href="#results" className="hover:text-primary transition-colors duration-300">Results</a>
-            <a href="#about" className="hover:text-primary transition-colors duration-300">About</a>
-          </div>
+            <div className="hidden md:flex items-center space-x-10 text-sm font-medium text-secondary">
+              <Link to="/" className="hover:text-primary transition-colors duration-300">Dashboard</Link>
+              <button onClick={scrollToUpload} className="hover:text-primary transition-colors duration-300 text-secondary">Scan</button>
+              <button onClick={scrollToUpload} className="hover:text-primary transition-colors duration-300 text-secondary">Results</button>
+              <Link to="/about" className="hover:text-primary transition-colors duration-300">About</Link>
+            </div>
 
-          <button
-            onClick={scrollToUpload}
-            className="rounded-full px-6 py-2.5 bg-primary text-black font-semibold text-sm hover:scale-[1.03] transition-transform duration-300"
-          >
-            Start Scan
-          </button>
-        </nav>
-
-        {/* Hero Section */}
-        <main
-          className="flex flex-col items-center justify-center text-center px-6"
-          style={{ paddingTop: 'calc(8rem - 75px)', paddingBottom: '10rem' }}
-        >
-          <h1 className="text-5xl sm:text-7xl md:text-8xl max-w-6xl font-serif font-normal leading-[0.95] tracking-[-2px] text-primary animate-fade-rise">
-            Track. <span className="text-accent">Detect.</span> <span className="text-accent">Protect</span> digital assets with AI.
-          </h1>
-
-          <p className="text-base sm:text-lg max-w-2xl mt-8 leading-relaxed text-gray-300 font-light animate-fade-rise-delay">
-            Identify unauthorized usage of your media across digital platforms using intelligent fingerprinting and real-time detection.
-          </p>
-
-          <div className="relative mt-12 animate-fade-rise-delay-2 group">
-            {/* Subtle glow behind CTA */}
-            <div className="absolute -inset-1 rounded-full bg-accent-strong opacity-20 group-hover:opacity-40 blur-lg transition duration-500"></div>
             <button
               onClick={scrollToUpload}
-              className="relative bg-accent-strong text-primary overflow-hidden rounded-full font-medium shadow-2xl px-14 py-5 text-base hover:scale-[1.03] transition-all duration-300 flex items-center justify-center"
+              className="rounded-full px-6 py-2.5 bg-primary text-black font-semibold text-sm hover:scale-[1.03] transition-transform duration-300 mt-4 sm:mt-0"
             >
-              Upload & Scan Media
+              Start Scan
             </button>
-          </div>
-        </main>
+          </nav>
+        )}
 
-        {/* Real Upload Section */}
-        <UploadSection />
+        <div className="flex-1">
+          <Routes>
+            <Route path="/" element={
+              <>
+                {/* Hero Section */}
+                <main
+                  className="flex flex-col items-center justify-center text-center px-6"
+                  style={{ paddingTop: 'calc(8rem - 75px)', paddingBottom: '10rem' }}
+                >
+                  <h1 className="text-5xl sm:text-7xl md:text-8xl max-w-6xl font-serif font-normal leading-[0.95] tracking-[-2px] text-primary animate-fade-rise">
+                    Track. <span className="text-accent">Detect.</span> <span className="text-accent">Protect</span> digital assets with AI.
+                  </h1>
+
+                  <p className="text-base sm:text-lg max-w-2xl mt-8 leading-relaxed text-gray-300 font-light animate-fade-rise-delay">
+                    Identify unauthorized usage of your media across digital platforms using intelligent fingerprinting and real-time detection.
+                  </p>
+
+                  <div className="relative mt-12 animate-fade-rise-delay-2 group">
+                    {/* Subtle glow behind CTA */}
+                    <div className="absolute -inset-1 rounded-full bg-accent-strong opacity-20 group-hover:opacity-40 blur-lg transition duration-500"></div>
+                    <button
+                      onClick={scrollToUpload}
+                      className="relative bg-accent-strong text-primary overflow-hidden rounded-full font-medium shadow-2xl px-14 py-5 text-base hover:scale-[1.03] transition-all duration-300 flex items-center justify-center"
+                    >
+                      Upload & Scan Media
+                    </button>
+                  </div>
+                </main>
+
+                {/* Real Upload Section */}
+                <UploadSection onScanComplete={handleScanComplete} />
+
+                {/* Results Dashboard Section */}
+                <ResultsDashboard mediaId={activeMediaId} />
+              </>
+            } />
+            <Route path="/about" element={<AboutPage />} />
+          </Routes>
+        </div>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

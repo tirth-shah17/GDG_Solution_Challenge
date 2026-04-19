@@ -3,7 +3,11 @@ import { UploadCloud, ImageIcon, CheckCircle, Loader2, X } from 'lucide-react';
 
 type ScanStatus = 'idle' | 'scanning' | 'done';
 
-export function UploadSection() {
+interface UploadSectionProps {
+  onScanComplete?: (mediaId: string) => void;
+}
+
+export function UploadSection({ onScanComplete }: UploadSectionProps) {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -79,8 +83,12 @@ export function UploadSection() {
         throw new Error(errData.detail || 'Upload failed');
       }
 
-      // const data = await response.json(); // You can use data.asset_id later
+      const data = await response.json();
       setStatus('done');
+      
+      if (onScanComplete && data.asset_id) {
+        onScanComplete(data.asset_id);
+      }
       
     } catch (error) {
       console.error(error);
