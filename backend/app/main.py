@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import upload, scan, results
+from app.api.routes import upload, scan, results, scraper
+from app.core.logger import logger
+from app.db.database import engine
+from app.models.domain import Base
 
 app = FastAPI(title="MediaShield AI", description="Digital Asset Protection System API")
 
@@ -16,6 +19,21 @@ app.add_middleware(
 app.include_router(upload.router, prefix="/api/upload", tags=["upload"])
 app.include_router(scan.router, prefix="/api/scan", tags=["scan"])
 app.include_router(results.router, prefix="/api/results", tags=["results"])
+app.include_router(scraper.router, prefix="/api/scraper", tags=["web-scraper"])
+
+
+@app.on_event("startup")
+async def startup_event():
+    """
+    Ensure the database schema exists before serving requests.
+    This keeps local/dev environments from failing on first upload.
+    """
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database schema verified successfully.")
+    except Exception:
+        logger.exception("Failed to initialize database schema on startup.")
+        raise
 
 @app.get("/")
 async def root():

@@ -3,10 +3,12 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 're
 import { UploadSection } from './components/ui/UploadSection';
 import ResultsDashboard from './pages/ResultsDashboard';
 import AboutPage from './pages/AboutPage';
+import type { WorkflowRequest } from './services/api';
 
 function AppContent() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [activeMediaId, setActiveMediaId] = useState<string | null>(null);
+  const [activeRequest, setActiveRequest] = useState<WorkflowRequest | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -72,8 +74,9 @@ function AppContent() {
     }
   };
 
-  const handleScanComplete = (mediaId: string) => {
-    setActiveMediaId(mediaId);
+  const handleProcessStart = (request: WorkflowRequest) => {
+    setActiveRequest(request);
+    setIsProcessing(true);
     setTimeout(() => {
       const resultsSection = document.getElementById('results');
       if (resultsSection) {
@@ -108,7 +111,7 @@ function AppContent() {
 
             <div className="hidden md:flex items-center space-x-10 text-sm font-medium text-secondary">
               <Link to="/" className="hover:text-primary transition-colors duration-300">Dashboard</Link>
-              <button onClick={scrollToUpload} className="hover:text-primary transition-colors duration-300 text-secondary">Scan</button>
+              <button onClick={scrollToUpload} className="hover:text-primary transition-colors duration-300 text-secondary">Verify</button>
               <button onClick={scrollToUpload} className="hover:text-primary transition-colors duration-300 text-secondary">Results</button>
               <Link to="/about" className="hover:text-primary transition-colors duration-300">About</Link>
             </div>
@@ -117,7 +120,7 @@ function AppContent() {
               onClick={scrollToUpload}
               className="rounded-full px-6 py-2.5 bg-primary text-black font-semibold text-sm hover:scale-[1.03] transition-transform duration-300 mt-4 sm:mt-0"
             >
-              Start Scan
+              Start Check
             </button>
           </nav>
         )}
@@ -146,16 +149,16 @@ function AppContent() {
                       onClick={scrollToUpload}
                       className="relative bg-accent-strong text-primary overflow-hidden rounded-full font-medium shadow-2xl px-14 py-5 text-base hover:scale-[1.03] transition-all duration-300 flex items-center justify-center"
                     >
-                      Upload & Scan Media
+                      Upload & Check Website
                     </button>
                   </div>
                 </main>
 
                 {/* Real Upload Section */}
-                <UploadSection onScanComplete={handleScanComplete} />
+                <UploadSection onProcessStart={handleProcessStart} isProcessing={isProcessing} />
 
                 {/* Results Dashboard Section */}
-                <ResultsDashboard mediaId={activeMediaId} />
+                <ResultsDashboard request={activeRequest} onLoadingChange={setIsProcessing} />
               </>
             } />
             <Route path="/about" element={<AboutPage />} />
