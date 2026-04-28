@@ -3,6 +3,7 @@ import { AlertCircle, CheckCircle, ShieldAlert, ImageIcon, Globe } from 'lucide-
 import {
   startScan,
   startScrape,
+  generateInsight,
   type ScanResult,
   type WorkflowRequest,
 } from '../services/api';
@@ -21,6 +22,17 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ request, onLoadingC
   const [totalChecked, setTotalChecked] = useState<number | null>(null);
   const [thresholdUsed, setThresholdUsed] = useState<number | null>(null);
   const [strategyUsed, setStrategyUsed] = useState<string | null>(null);
+  const [insights, setInsights] = useState<Record<number, { loading: boolean, text?: string }>>({});
+
+  const handleGenerateInsight = async (idx: number, similarity: number) => {
+    setInsights(prev => ({ ...prev, [idx]: { loading: true } }));
+    try {
+      const response = await generateInsight(similarity);
+      setInsights(prev => ({ ...prev, [idx]: { loading: false, text: response.ai_explanation } }));
+    } catch (err) {
+      setInsights(prev => ({ ...prev, [idx]: { loading: false, text: 'Failed to generate insight.' } }));
+    }
+  };
 
   useEffect(() => {
     if (!request) return;
@@ -34,6 +46,7 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ request, onLoadingC
       setTotalChecked(null);
       setThresholdUsed(null);
       setStrategyUsed(null);
+      setInsights({});
 
       try {
         if (request.mode === 'scrape') {
@@ -247,6 +260,35 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ request, onLoadingC
                           >
                             <div className="absolute inset-0 bg-white/20 w-full animate-pulse"></div>
                           </div>
+                       </div>
+                       
+                       {/* AI Insight */}
+                       <div className="mt-4">
+                         {!insights[idx] && isFlaggedResult && (
+                           <button
+                             onClick={() => handleGenerateInsight(idx, result.similarity)}
+                             className="w-full py-2 px-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-accent/30 text-xs font-medium text-secondary transition-all duration-300 flex items-center justify-center gap-2"
+                           >
+                             ✨ Generate AI Insight
+                           </button>
+                         )}
+                         
+                         {insights[idx]?.loading && (
+                           <div className="w-full py-3 flex items-center justify-center border border-white/5 bg-white/[0.01] rounded-xl">
+                             <div className="w-4 h-4 border-2 border-accent/20 border-t-accent rounded-full animate-spin"></div>
+                           </div>
+                         )}
+
+                         {insights[idx]?.text && !insights[idx].loading && (
+                           <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                             <div className="flex items-center gap-2 mb-1.5">
+                               <span className="text-[10px] uppercase tracking-widest text-accent font-medium">AI Insight</span>
+                             </div>
+                             <p className="text-xs text-secondary/80 leading-relaxed">
+                               {insights[idx].text}
+                             </p>
+                           </div>
+                         )}
                        </div>
                     </div>
                   </div>

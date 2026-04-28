@@ -45,7 +45,8 @@ def find_similar_images(media_id: UUID, db: Session) -> list:
                 match_info = {
                     "file_path": item.file_path,
                     "similarity": round(similarity, 2),
-                    "status": "violation"
+                    "status": "violation",
+                    "ai_explanation": None
                 }
                 matches_found.append(match_info)
                 

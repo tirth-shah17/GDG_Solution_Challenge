@@ -106,7 +106,7 @@ function AppContent() {
         {location.pathname !== '/about' && (
           <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto flex-wrap w-full z-50">
             <Link to="/" className="text-primary font-serif text-2xl md:text-3xl tracking-wide select-none">
-              Athos<sup className="text-sm">®</sup>
+              Athos Engine<sup className="text-sm">®</sup>
             </Link>
 
             <div className="hidden md:flex items-center space-x-10 text-sm font-medium text-secondary">

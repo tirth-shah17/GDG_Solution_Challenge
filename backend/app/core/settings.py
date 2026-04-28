@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     SCRAPER_MAX_IMAGE_BYTES: int = 5 * 1024 * 1024
     SCRAPER_MAX_TOTAL_DOWNLOAD_BYTES: int = 20 * 1024 * 1024
     PEXELS_API_KEY: str | None = None
+    GEMINI_API_KEY: str | None = None
     
     class Config:
         env_file = ".env"

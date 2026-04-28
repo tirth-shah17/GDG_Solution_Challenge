@@ -12,12 +12,14 @@ export interface ScanResult {
   file_path: string;
   similarity: number;
   status: string;
+  ai_explanation?: string;
 }
 
 export interface ScraperResult {
   file_path: string;
   similarity: number;
   status: 'match' | 'no_match';
+  ai_explanation?: string;
 }
 
 export interface ScraperResponse {
@@ -95,6 +97,23 @@ export const startScrape = async (
     };
     error.status = response.status;
     throw error;
+  }
+
+  return response.json();
+};
+
+export const generateInsight = async (similarity: number): Promise<{ ai_explanation: string }> => {
+  const response = await fetch(`${API_BASE_URL}/insight/generate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ similarity }),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.detail || 'Failed to generate AI insight');
   }
 
   return response.json();

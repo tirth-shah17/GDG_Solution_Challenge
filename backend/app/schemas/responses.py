@@ -7,12 +7,14 @@ class MatchResponse(BaseModel):
     matched_image_url: str
     similarity_score: float
     is_violation: bool
+    ai_explanation: Optional[str] = None
 
 
 class ScrapedImageMatch(BaseModel):
     file_path: str
     similarity: float
     status: str  # "match" or "no_match"
+    ai_explanation: Optional[str] = None
 
 
 class WebScraperResponse(BaseModel):

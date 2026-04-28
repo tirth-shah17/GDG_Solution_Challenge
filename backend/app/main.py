@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import upload, scan, results, scraper
+from app.api.routes import upload, scan, results, scraper, insight
 from app.core.logger import logger
 from app.db.database import engine
 from app.models.domain import Base
@@ -20,6 +20,7 @@ app.include_router(upload.router, prefix="/api/upload", tags=["upload"])
 app.include_router(scan.router, prefix="/api/scan", tags=["scan"])
 app.include_router(results.router, prefix="/api/results", tags=["results"])
 app.include_router(scraper.router, prefix="/api/scraper", tags=["web-scraper"])
+app.include_router(insight.router, prefix="/api/insight", tags=["insight"])
 
 
 @app.on_event("startup")

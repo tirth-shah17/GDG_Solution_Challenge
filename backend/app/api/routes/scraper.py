@@ -72,7 +72,8 @@ async def scrape_and_compare(request: WebScraperRequest, db: Session = Depends(g
             match_result = ScrapedImageMatch(
                 file_path=scraped_image.source_url,
                 similarity=similarity,
-                status=match_status
+                status=match_status,
+                ai_explanation=None
             )
             matches_found.append(match_result)
             
