@@ -10,7 +10,10 @@ app = FastAPI(title="MediaShield AI", description="Digital Asset Protection Syst
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, restrict this
+    allow_origins=[
+        "http://localhost:5173",
+        "https://gdg-solution-challenge-eight.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
