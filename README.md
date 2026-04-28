@@ -35,3 +35,14 @@ Athos secures digital IP boundaries by moving beyond simple file-matching and le
 4. **Resilient Scanning**: When a suspicious media asset is scanned against the registry, Athos calculates its fingerprint and compares it against the database using **Hamming Distance thresholds**. 
 
 Because perceptual hashing looks at the *visual structure* rather than raw bytes, the system can confidently detect unauthorized media usage—even if a pirate has maliciously resized, cropped, or slightly compressed the stolen asset!
+
+### Advanced Web Scraping Engine
+Athos includes an intelligent web scraper that allows users to scan external websites for potential copyright violations.
+- **Dynamic Content Extraction**: Capable of pulling media assets directly from target URLs using multiple strategies (direct HTML parsing or headless browser rendering).
+- **On-the-fly Comparison**: Extracted assets are instantly fingerprinted and compared against the user's uploaded reference asset, pinpointing exact matches in the wild.
+
+### Coming Soon: AI-Powered Insights (Gemini)
+We are integrating the **Google Gemini API** to elevate our violation detection. When a match is found, the AI will provide a brief, human-readable explanation ("AI Insight") detailing:
+- Why the images are visually similar.
+- Whether any specific modifications (cropping, blurring, brightness adjustments) appear to have been applied.
+- The context behind the violation confidence score.
